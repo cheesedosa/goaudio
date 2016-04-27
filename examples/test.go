@@ -57,7 +57,4 @@ func main(){
 	time.Sleep(time.Second * 2) //10 sec
 	gain.Gain.Value = 0  // shhh
 
-	var input string
-    fmt.Scanln(&input)
-    fmt.Println("done")
 }
