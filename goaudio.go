@@ -44,9 +44,12 @@ func (a *AudioContext) CreateBuffer(){
 	fmt.Println("Current Buffer")
 }
 
-func (a *AudioContext) CreateBufferSource(){
+func (a *AudioContext) CreateBufferSource() *AudioBufferSource{
 	
+	audiobuffersource := AudioBufferSource{node: Node{},timestamp: time.Now()}
 	fmt.Println("Current Buffer to use as source")
+	return &audiobuffersource
+	
 }
 
 func (a *AudioContext) StereoPanner(){

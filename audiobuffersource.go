@@ -1,0 +1,109 @@
+package goaudio
+
+import "fmt"
+import "time"
+
+type AudioBufferSource struct {
+	Buffer *[]float32
+	bufferlength int
+	Loop bool
+	node Node
+	on bool
+	end bool
+	currentidx int
+	timestamp time.Time
+	startStamp float64
+	stopStamp float64
+	
+	
+}
+
+func (abs *AudioBufferSource) Start(x float64){
+	
+	//todo
+	
+	abs.startStamp = x
+}
+
+func (abs *AudioBufferSource) Stop(x float64){
+	
+	//todo
+	abs.stopStamp = x
+}
+
+func (abs *AudioBufferSource) Connect(c Component){
+	
+	cnode := c.getNode()
+	abs.node.output = c
+	(*cnode).input = abs
+}
+
+func (abs *AudioBufferSource) getNode() *Node{
+	
+	return &abs.node
+}
+
+func (abs *AudioBufferSource) isOn() bool {
+	
+	//todo: multiple start stops
+	
+	//fmt.Println(time.Since(o.timestamp).Seconds(), len(o.startStamp), len(o.stopStamp))
+	//if len(o.startStamp) > 0 && time.Since(o.timestamp).Seconds() >= o.startStamp[0] {
+		//o.startStamp = o.startStamp[1:]
+		//o.on = true
+		//return true
+	//} else if len(o.stopStamp) > 0 &&time.Since(o.timestamp).Seconds() >= o.stopStamp[0] {
+		//o.stopStamp = o.startStamp[1:]
+			//o.on = false
+			//return false
+		//}
+	//return false
+	
+	
+	fmt.Println(time.Since(abs.timestamp).Seconds())
+	if time.Since(abs.timestamp).Seconds() >= abs.startStamp {
+		abs.on = true
+		return true
+	} else if time.Since(abs.timestamp).Seconds() >= abs.stopStamp {
+			abs.on = false
+			return false
+		}
+	return false
+}
+
+func (abs *AudioBufferSource) process(data *[]float32) {
+	
+	abs.bufferlength = len(*abs.Buffer)
+	frames:= len(*data)
+	
+	fmt.Println(abs.bufferlength, abs.currentidx*frames, abs.on, abs.end)
+	//check start/stop
+	if !abs.isOn(){
+		fmt.Println("off")
+		return
+	}
+	//check if playback finished
+	if abs.end{
+		//if loop is set; play again
+		if abs.Loop {
+		fmt.Println("looping")
+		abs.currentidx = 0
+		abs.end = false
+		}
+		abs.on = false
+		fmt.Println("Bye")
+		return
+	}
+	//check if final frame; otherwise just play
+	
+	if abs.currentidx*frames+frames > abs.bufferlength {
+		*data = (*abs.Buffer)[abs.currentidx*frames:]
+		abs.end = true
+	}else {
+	fmt.Println("Playing", abs.currentidx)
+	*data = (*abs.Buffer)[abs.currentidx*frames:abs.currentidx*frames+frames]
+	//fmt.Println((*abs.Buffer)[abs.currentidx*frames:abs.currentidx*frames+frames])
+	}
+	abs.currentidx += 1	
+	//fmt.Println(*data)
+}

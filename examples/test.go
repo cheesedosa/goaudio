@@ -1,5 +1,5 @@
 /*Still highly experimental
- * Ctrl+C to exit, hahaha
+ * Press Any Key to exit, hahaha
  * Check README.md
  * 
  */
