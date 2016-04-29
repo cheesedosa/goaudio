@@ -1,7 +1,9 @@
 package goaudio
 
 import "fmt"
-import "time"
+//import "time"
+
+var emptyBuffer []float32 = make([]float32, 1024)
 
 type AudioContext struct{
 	sampleRate float64
@@ -46,7 +48,7 @@ func (a *AudioContext) CreateBuffer(){
 
 func (a *AudioContext) CreateBufferSource() *AudioBufferSource{
 	
-	audiobuffersource := AudioBufferSource{node: Node{},timestamp: time.Now()}
+	audiobuffersource := AudioBufferSource{node: Node{}}
 	fmt.Println("Current Buffer to use as source")
 	return &audiobuffersource
 	
@@ -101,7 +103,7 @@ func (a *AudioContext) CreateIIRFilter(){
 
 func (a *AudioContext) CreateOscillator(freq float32, osctype string, det float32) *Oscillator{
 	
-	osc := Oscillator{Frequency: AudioParam{freq, 220.0}, Detune: AudioParam{det, 0.0}, OscType: osctype, wave: &Wave{float64(freq/44100), 0}, on:false, node: Node{}, timestamp: time.Now()}
+	osc := Oscillator{Frequency: AudioParam{freq, 220.0}, Detune: AudioParam{det, 0.0}, OscType: osctype, wave: &Wave{float64(freq/44100), 0}, on:false, node: Node{}}
 	
 	fmt.Println(osc.wave.phase)
 	

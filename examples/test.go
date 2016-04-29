@@ -56,5 +56,11 @@ func main(){
 	gain.Gain.Value = 0.4
 	time.Sleep(time.Second * 2) //10 sec
 	gain.Gain.Value = 0  // shhh
+	
+	
+	//blocking the main from returning and exiting the program; press any key to exit
+	var input string
+    fmt.Scanln(&input)
+    fmt.Print("Done.")
 
 }

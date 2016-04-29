@@ -19,7 +19,7 @@ func main(){
 	
 	audiosource := context.CreateBufferSource()
 	
-	//make a buffer to be held by the audio node
+	//make a buffer to be held by the audio node; sampling rate x 3 = 3 seconds of noise
 	data := make([]float32,44100*3)
 	
 	//make some noise
@@ -32,10 +32,11 @@ func main(){
 	//fmt.Println(audiosource.Buffer)
 	audiosource.Connect(context.Dest)
 	audiosource.Loop = true
-	audiosource.Start(0)
+	audiosource.Start()
 	fmt.Println(audiosource)
 	context.Play()	
     
+   	//blocking the main from returning and exiting the program; press any key to exit
     var input string
     fmt.Scanln(&input)
     fmt.Print("Done.")

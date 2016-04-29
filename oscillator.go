@@ -1,7 +1,7 @@
 package goaudio
 
-import "fmt"
-import "time"
+//import "fmt"
+//import "time"
 
 type Oscillator struct {
 	
@@ -11,21 +11,23 @@ type Oscillator struct {
 	node Node
 	wave *Wave
 	on bool
-	timestamp time.Time
-	startStamp float64
-	stopStamp float64
+	//timestamp time.Time
+	//startStamp float64
+	//stopStamp float64
 }
 
-func (o *Oscillator) Start(x float64){
+func (o *Oscillator) Start(){
 	
 	//todo
-	o.startStamp = x
+	//o.startStamp = x
+	o.on = true
 }
 
 func (o *Oscillator) Stop(x float64){
 	
 	//todo
-	o.stopStamp = x
+	//o.stopStamp = x
+	o.on = false
 
 }
 
@@ -39,6 +41,9 @@ func (o *Oscillator) Connect(c Component){
 }
 
 func (o *Oscillator) process(data *[]float32){
+	
+	//Use a default empty buffer to fill, instead of the slice passed to the function; this avoids DC values
+	*data = emptyBuffer
 	
 	if !o.isOn() {
 		return
@@ -80,13 +85,15 @@ func (o *Oscillator) isOn() bool {
 	//return false
 	
 	
-	fmt.Println(time.Since(o.timestamp).Seconds())
-	if time.Since(o.timestamp).Seconds() >= o.startStamp {
-		o.on = true
-		return true
-	} else if time.Since(o.timestamp).Seconds() >= o.stopStamp {
-			o.on = false
-			return false
-		}
-	return false
+	//fmt.Println(time.Since(o.timestamp).Seconds())
+	//if time.Since(o.timestamp).Seconds() >= o.startStamp {
+		//o.on = true
+		//return true
+	//} else if time.Since(o.timestamp).Seconds() >= o.stopStamp {
+			//o.on = false
+			//return false
+		//}
+	//return false
+	
+	return o.on
 }

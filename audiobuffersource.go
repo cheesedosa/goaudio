@@ -1,7 +1,7 @@
 package goaudio
 
 import "fmt"
-import "time"
+//import "time"
 
 type AudioBufferSource struct {
 	Buffer *[]float32
@@ -11,24 +11,25 @@ type AudioBufferSource struct {
 	on bool
 	end bool
 	currentidx int
-	timestamp time.Time
-	startStamp float64
-	stopStamp float64
-	
-	
+	//timestamp time.Time
+	//startStamp float64
+	//stopStamp float64
 }
 
-func (abs *AudioBufferSource) Start(x float64){
+func (abs *AudioBufferSource) Start(){
 	
 	//todo
 	
-	abs.startStamp = x
+	//abs.startStamp = x
+	
+	abs.on = true
 }
 
 func (abs *AudioBufferSource) Stop(x float64){
 	
 	//todo
-	abs.stopStamp = x
+	//abs.stopStamp = x
+	abs.on = false
 }
 
 func (abs *AudioBufferSource) Connect(c Component){
@@ -60,26 +61,35 @@ func (abs *AudioBufferSource) isOn() bool {
 	//return false
 	
 	
-	fmt.Println(time.Since(abs.timestamp).Seconds())
-	if time.Since(abs.timestamp).Seconds() >= abs.startStamp {
-		abs.on = true
-		return true
-	} else if time.Since(abs.timestamp).Seconds() >= abs.stopStamp {
-			abs.on = false
-			return false
-		}
-	return false
+	//fmt.Println(time.Since(abs.timestamp).Seconds())
+	//if time.Since(abs.timestamp).Seconds() >= abs.startStamp {
+		//abs.on = true
+		//return true
+	//} else if time.Since(abs.timestamp).Seconds() >= abs.stopStamp {
+			//abs.on = false
+			//return false
+		//}
+	//return false
+	
+	return abs.on
 }
 
 func (abs *AudioBufferSource) process(data *[]float32) {
 	
+	//Use a default empty buffer to fill, instead of the slice passed to the function; this avoids DC values
+	*data = emptyBuffer
+	
 	abs.bufferlength = len(*abs.Buffer)
 	frames:= len(*data)
 	
-	fmt.Println(abs.bufferlength, abs.currentidx*frames, abs.on, abs.end)
+	//fmt.Println(abs.bufferlength, abs.currentidx*frames, abs.on, abs.end)
+	
+	//fmt.Println((*data)[:5])
 	//check start/stop
 	if !abs.isOn(){
 		fmt.Println("off")
+		
+		//fmt.Println(data)
 		return
 	}
 	//check if playback finished
@@ -90,8 +100,6 @@ func (abs *AudioBufferSource) process(data *[]float32) {
 		abs.currentidx = 0
 		abs.end = false
 		}
-		abs.on = false
-		fmt.Println("Bye")
 		return
 	}
 	//check if final frame; otherwise just play
@@ -100,10 +108,8 @@ func (abs *AudioBufferSource) process(data *[]float32) {
 		*data = (*abs.Buffer)[abs.currentidx*frames:]
 		abs.end = true
 	}else {
-	fmt.Println("Playing", abs.currentidx)
+	//fmt.Println("Playing", abs.currentidx)
 	*data = (*abs.Buffer)[abs.currentidx*frames:abs.currentidx*frames+frames]
-	//fmt.Println((*abs.Buffer)[abs.currentidx*frames:abs.currentidx*frames+frames])
 	}
 	abs.currentidx += 1	
-	//fmt.Println(*data)
 }
