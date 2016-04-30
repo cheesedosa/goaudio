@@ -41,9 +41,15 @@ func (a *AudioContext) CurrentTime(){
 
 //Various methods to create different crap
 
-func (a *AudioContext) CreateBuffer(){
+func (a *AudioContext) CreateBuffer(f string) ([]float32, float32){
 	
-	fmt.Println("Current Buffer")
+	//Takes in a file name and returns the parsed wav data as a slice of []float32. Also, returns the sampling rate of the wav file
+	
+	wavdata := simpleWavReader(f)
+	
+	buffer := normalizeWavData(wavdata.data)
+	
+	return buffer , float32(wavdata.SampleRate)
 }
 
 func (a *AudioContext) CreateBufferSource() *AudioBufferSource{
