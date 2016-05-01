@@ -7,12 +7,11 @@
 //
 
 
-// same example as audiobuffertest.go only this one uses AudioContext.CreateBuffer to create a buffer from a wav file
+// Loads up a wav file "piano.wav" and plays back with the delay specified in CreateDelay() call
 package main
 
 import "github.com/mrnikho/goaudio"
 import "fmt"
-import "math/rand"
 func main(){
 	
 	context:= goaudio.NewAudioContext(44100)
@@ -25,11 +24,21 @@ func main(){
 	
 	audiosource.Buffer = &data
 	
-	//fmt.Println(audiosource.Buffer)
-	audiosource.Connect(context.Dest)
+	delay := context.CreateDelay(1) // 1 sec delay
+		
+	//Connect our source to delay
+	audiosource.Connect(delay)
+	
+	//Connect our delay to our destination
+	delay.Connect(context.Dest)
+	
+	//Loop the source
 	audiosource.Loop = true
+	
+	//Start this guy
 	audiosource.Start()
-	fmt.Println(audiosource)
+	
+	//Start our context; this starts portaudio and the processing calls to each created node
 	context.Play()	
     
    	//blocking the main from returning and exiting the program; press any key to exit

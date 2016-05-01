@@ -85,9 +85,11 @@ func (a *AudioContext) CreateConvolver(){
 	fmt.Println("Convolver")
 }
 
-func (a *AudioContext) CreateDelay(){
+func (a *AudioContext) CreateDelay(dtime float64) *Delay{
 	
-	fmt.Println("Delay")
+	dly := Delay{node:Node{},delayBuffer: make([]float32, int(a.sampleRate*dtime)), DelayTime: AudioParam{float32(dtime), float32(0.0)}}
+	
+	return &dly
 }
 
 func (a *AudioContext) CreateDynamicsCompressor(){
