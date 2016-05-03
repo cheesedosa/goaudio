@@ -1,3 +1,10 @@
+/* Audio Library based on the webaudio API written in Golang.
+ * This work in progress and is highly experimental.
+ * Yet to implement multiple chains on Destination. Currently, it supports only one chain.
+ * The Chain may have any number of the currently implemented nodes but only the last chain connected to the 
+ * destination is processed as of now.
+ */
+
 package goaudio
 
 import "fmt"
@@ -21,17 +28,20 @@ func NewAudioContext(sr float64) *AudioContext{
 	return &AudioContext{sampleRate: sr, Dest: &Destination{node: Node{}}}
 }
 
-func (a *AudioContext) Close(){
+//func (a *AudioContext) Close(){
 	
-	fmt.Println("Stopped.")
-}
+	//fmt.Println("Stopped.")
+//}
 
 func (a *AudioContext) Play(){
 	
 	// plays the "graph", a result of all the connects called on individual components as a goroutine to allow further changes to the graph
 	go a.playGraph()
 	
-	fmt.Println("Starting...")
+	fmt.Println("This start a goroutine.")
+	fmt.Println("To prevent the program from eiting you should have implemented a block inside your main function.")
+	fmt.Println("Even a simple input scan would do. Check /examples for ideas.")
+	fmt.Println("Starting play...")
 }
 
 func (a *AudioContext) CurrentTime(){
@@ -55,7 +65,6 @@ func (a *AudioContext) CreateBuffer(f string) ([]float32, float32){
 func (a *AudioContext) CreateBufferSource() *AudioBufferSource{
 	
 	audiobuffersource := AudioBufferSource{node: Node{}}
-	fmt.Println("Current Buffer to use as source")
 	return &audiobuffersource
 	
 }

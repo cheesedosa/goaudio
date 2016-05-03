@@ -21,8 +21,9 @@ func main(){
 	
 	audiosource := context.CreateBufferSource()
 	
-	data, _ := context.CreateBuffer("piano.wav")
-	
+	//Create buffer returns the audio data as a []float32 slice and the sampling rate
+	data, sr := context.CreateBuffer("piano.wav")
+	fmt.Println("The Sampling rate is: ", sr, " Hz.")
 	audiosource.Buffer = &data
 	
 	//fmt.Println(audiosource.Buffer)
