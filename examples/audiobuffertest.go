@@ -15,7 +15,7 @@ func main(){
 	
 	context:= goaudio.NewAudioContext(44100)
 	
-	fmt.Println(context.GetSampleRate())
+	fmt.Println("The Sampling rate is: ", context.GetSampleRate())
 	
 	audiosource := context.CreateBufferSource()
 	
@@ -29,11 +29,9 @@ func main(){
 	
 	audiosource.Buffer = &data
 	
-	//fmt.Println(audiosource.Buffer)
 	audiosource.Connect(context.Dest)
 	audiosource.Loop = true
 	audiosource.Start()
-	fmt.Println(audiosource)
 	context.Play()	
     
    	//blocking the main from returning and exiting the program; press any key to exit

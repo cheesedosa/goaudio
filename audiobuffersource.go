@@ -35,8 +35,8 @@ func (abs *AudioBufferSource) Stop(x float64){
 func (abs *AudioBufferSource) Connect(c Component){
 	
 	cnode := c.getNode()
-	abs.node.output = c
-	(*cnode).input = abs
+	abs.node.output = append(abs.node.output,c)
+	(*cnode).input = append((*cnode).input,abs)
 }
 
 func (abs *AudioBufferSource) getNode() *Node{
@@ -74,13 +74,13 @@ func (abs *AudioBufferSource) isOn() bool {
 	return abs.on
 }
 
-func (abs *AudioBufferSource) process(data *[]float32) {
+func (abs *AudioBufferSource) process() {
 	
 	//Use a default empty buffer to fill, instead of the slice passed to the function; this avoids DC values
-	*data = emptyBuffer
+	abs.node.buffer = emptyBuffer
 	
 	abs.bufferlength = len(*abs.Buffer)
-	frames:= len(*data)
+	frames:= len(abs.node.buffer)
 	
 	//fmt.Println(abs.bufferlength, abs.currentidx*frames, abs.on, abs.end)
 	
@@ -105,11 +105,12 @@ func (abs *AudioBufferSource) process(data *[]float32) {
 	//check if final frame; otherwise just play
 	
 	if abs.currentidx*frames+frames > abs.bufferlength {
-		*data = (*abs.Buffer)[abs.currentidx*frames:]
+	//For the ending bit of the buffer, concatenate the slice with 0s to make the length equal to Node.buffer
+		abs.node.buffer = append((*abs.Buffer)[abs.currentidx*frames:],make([]float32, len(abs.node.buffer)-len((*abs.Buffer)[abs.currentidx*frames:]))...)
 		abs.end = true
 	}else {
 	//fmt.Println("Playing", abs.currentidx)
-	*data = (*abs.Buffer)[abs.currentidx*frames:abs.currentidx*frames+frames]
+	abs.node.buffer = (*abs.Buffer)[abs.currentidx*frames:abs.currentidx*frames+frames]
 	}
 	abs.currentidx += 1	
 }

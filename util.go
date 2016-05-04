@@ -6,8 +6,9 @@ import "github.com/gordonklaus/portaudio"
 //basic types that build up components
 
 type Node struct {
-	input Component
-	output Component
+	input []Component
+	output []Component
+	buffer []float32
 }
 
 type AudioParam struct {
@@ -33,42 +34,23 @@ func (a *AudioContext) playGraph() {
 	
 	portaudio.Initialize()
 	defer portaudio.Terminate()
-	data := make([]float32, 1024)
-	stream, err := portaudio.OpenDefaultStream(0,1,a.sampleRate, len(data), &data)
+	
+	//data := make([]float32, 1024)
+	stream, err := portaudio.OpenDefaultStream(0,1,a.sampleRate, 1024, a.Dest.node.buffer)
 	checkErr(err)
 	defer stream.Close()
 	
 	checkErr(stream.Start())
 	defer stream.Stop()
 	
-	
-	
-	
 	for {
-		getAudioData(*(a.Dest), &data)
+		
+		a.Dest.process()
+		//fmt.Println("Writing to stream..")
 		checkErr(stream.Write())
 	}
 }
 
-
-func getAudioData(d Destination, data *[]float32){
-	
-	c := d.node.input
-	processStuff(c, data)
-}
-
-
-func processStuff(c Component, data *[]float32){
-	
-	cnode := c.getNode()
-	if cnode.input == nil {
-		c.process(data)
-		return
-	}
-	nc := cnode.input
-	processStuff(nc, data)
-	c.process(data)
-}
 
 func checkErr(err error) {
 	if err != nil {

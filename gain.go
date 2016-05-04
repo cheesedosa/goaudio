@@ -12,15 +12,27 @@ type GainNode struct {
 func (g *GainNode) Connect(c Component){
 	
 	cnode:= c.getNode()
-	g.node.output = c
-	(*cnode).input = g
+	g.node.output = append(g.node.output,c)
+	(*cnode).input = append((*cnode).input,g)
 }
 
-func (g *GainNode) process(data *[]float32) {
-	gain := fixGain(g.Gain.Value)
-	for i := range *data{
-		(*data)[i] = (*data)[i] * gain
+func (g *GainNode) process() {
+	
+	//Process immediate input nodes. The nodes handle their own processes independently on their inputs
+	for _,comp := range g.node.input {
+		comp.process()
+		compnode := comp.getNode()
+		for i := range g.node.buffer {
+			g.node.buffer[i] = g.node.buffer[i] + compnode.buffer[i]
+		}
 	}
+	
+	gain := fixGain(g.Gain.Value)
+	
+	for i := range g.node.buffer{
+		g.node.buffer[i] = g.node.buffer[i] * gain
+	}
+	
 	
 }
 

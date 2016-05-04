@@ -10,12 +10,12 @@ package goaudio
 import "fmt"
 //import "time"
 
+//some globals; maybe these need refactoring
 var emptyBuffer []float32 = make([]float32, 1024)
 
 type AudioContext struct{
 	sampleRate float64
 	Dest *Destination
-
 }
 
 func (a *AudioContext) GetSampleRate() float64{
@@ -25,7 +25,7 @@ func (a *AudioContext) GetSampleRate() float64{
 
 func NewAudioContext(sr float64) *AudioContext{
 
-	return &AudioContext{sampleRate: sr, Dest: &Destination{node: Node{}}}
+	return &AudioContext{sampleRate: sr, Dest: &Destination{node: Node{buffer: make([]float32, 1024)}}}
 }
 
 //func (a *AudioContext) Close(){
@@ -38,10 +38,13 @@ func (a *AudioContext) Play(){
 	// plays the "graph", a result of all the connects called on individual components as a goroutine to allow further changes to the graph
 	go a.playGraph()
 	
-	fmt.Println("This start a goroutine.")
-	fmt.Println("To prevent the program from eiting you should have implemented a block inside your main function.")
+	fmt.Println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+	fmt.Println("This starts a goroutine that handles the playing.")
+	fmt.Println("To prevent the program from exiting you should have implemented a block inside \nyour main function.")
 	fmt.Println("Even a simple input scan would do. Check /examples for ideas.")
-	fmt.Println("Starting play...")
+	fmt.Println("Starting...")
+	fmt.Println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
 }
 
 func (a *AudioContext) CurrentTime(){
@@ -96,7 +99,7 @@ func (a *AudioContext) CreateConvolver(){
 
 func (a *AudioContext) CreateDelay(dtime float64) *Delay{
 	
-	dly := Delay{node:Node{},delayBuffer: make([]float32, int(a.sampleRate*dtime)), DelayTime: AudioParam{float32(dtime), float32(0.0)}}
+	dly := Delay{node:Node{buffer: make([]float32, 1024)},delayBuffer: make([]float32, int(a.sampleRate*dtime)), DelayTime: AudioParam{float32(dtime), float32(0.0)}}
 	
 	return &dly
 }
@@ -108,7 +111,7 @@ func (a *AudioContext) CreateDynamicsCompressor(){
 
 func (a *AudioContext) CreateGain() *GainNode{
 	
-	gain := GainNode{Gain: AudioParam{1.0, 1.0}, node: Node{}}
+	gain := GainNode{Gain: AudioParam{1.0, 1.0}, node: Node{buffer: make([]float32, 1024)}}
 	
 	return &gain
 }
@@ -120,7 +123,7 @@ func (a *AudioContext) CreateIIRFilter(){
 
 func (a *AudioContext) CreateOscillator(freq float32, osctype string, det float32) *Oscillator{
 	
-	osc := Oscillator{Frequency: AudioParam{freq, 220.0}, Detune: AudioParam{det, 0.0}, OscType: osctype, wave: &Wave{float64(freq/44100), 0}, on:false, node: Node{}}
+	osc := Oscillator{Frequency: AudioParam{freq, 220.0}, Detune: AudioParam{det, 0.0}, OscType: osctype, wave: &Wave{float64(freq/44100), 0}, on:false, node: Node{buffer: make([]float32, 1024)}}
 	
 	fmt.Println(osc.wave.phase)
 	

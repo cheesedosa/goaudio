@@ -6,6 +6,6 @@ package goaudio
 type Component interface {
 	
 	Connect(Component)
-	process(*[]float32)
+	process()
 	getNode() *Node
 }

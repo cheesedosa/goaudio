@@ -1,6 +1,6 @@
 package goaudio
 
-//import "fmt"
+import "fmt"
 //import "time"
 
 type Oscillator struct {
@@ -36,30 +36,28 @@ func (o *Oscillator) Stop(x float64){
 func (o *Oscillator) Connect(c Component){
 	
 	cnode := c.getNode()
-	o.node.output = c
-	(*cnode).input = o
+	o.node.output = append(o.node.output,c)
+	(*cnode).input = append((*cnode).input,o)
 }
 
-func (o *Oscillator) process(data *[]float32){
-	
-	//Use a default empty buffer to fill, instead of the slice passed to the function; this avoids DC values
-	*data = emptyBuffer
+func (o *Oscillator) process(){
 	
 	if !o.isOn() {
 		return
 	}
 	if o.Frequency.valueChanged() {
+		fmt.Println("Yes")
 		o.wave.step = float64(o.Frequency.Value/44100)
 	}
 	switch o.OscType{
 		case "SINE":
-			o.getSine(data)
+			o.getSine()
 		case "SAW":
-			o.getSaw(data)
+			o.getSaw()
 		case "TRI":
-			o.getTri(data)
+			o.getTri()
 		case "SQR":
-			o.getSqr(data)
+			o.getSqr()
 	}
 }
 

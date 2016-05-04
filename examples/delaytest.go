@@ -16,7 +16,7 @@ func main(){
 	
 	context:= goaudio.NewAudioContext(44100)
 	
-	fmt.Println(context.GetSampleRate())
+	fmt.Println("The Sampling rate is: ", context.GetSampleRate())
 	
 	audiosource := context.CreateBufferSource()
 	
