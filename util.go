@@ -8,6 +8,7 @@ import "github.com/gordonklaus/portaudio"
 type Node struct {
 	input []Component
 	output []Component
+	tickCount float64
 	buffer []float32
 }
 

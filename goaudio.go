@@ -67,7 +67,7 @@ func (a *AudioContext) CreateBuffer(f string) ([]float32, float32){
 
 func (a *AudioContext) CreateBufferSource() *AudioBufferSource{
 	
-	audiobuffersource := AudioBufferSource{node: Node{}}
+	audiobuffersource := AudioBufferSource{node: Node{buffer: make([]float32, 1024)}}
 	return &audiobuffersource
 	
 }

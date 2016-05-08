@@ -37,8 +37,10 @@ func (dly *Delay) process() {
 	var in [1024]float32
 	
 	for _,comp := range dly.node.input {
-		comp.process()
 		compnode := comp.getNode()
+		if dly.node.tickCount > compnode.tickCount {
+			comp.process()
+		}
 		for i := range in {
 			in[i] = in[i] + compnode.buffer[i]
 		}

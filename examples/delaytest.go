@@ -29,11 +29,14 @@ func main(){
 	//Connect our source to delay
 	audiosource.Connect(delay)
 	
-	//Connect our delay to our destination
+	//Connect our delay line to our destination
 	delay.Connect(context.Dest)
 	
 	//Loop the source
 	audiosource.Loop = true
+	
+	//Connect the source to the destination too. So, we have source + delayed source
+	audiosource.Connect(context.Dest)
 	
 	//Start this guy
 	audiosource.Start()

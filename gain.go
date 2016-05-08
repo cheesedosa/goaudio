@@ -18,10 +18,13 @@ func (g *GainNode) Connect(c Component){
 
 func (g *GainNode) process() {
 	
+	g.node.tickCount = g.node.tickCount + 1
 	//Process immediate input nodes. The nodes handle their own processes independently on their inputs
 	for _,comp := range g.node.input {
-		comp.process()
 		compnode := comp.getNode()
+		if g.node.tickCount > compnode.tickCount {
+			comp.process()
+		}
 		for i := range g.node.buffer {
 			g.node.buffer[i] = g.node.buffer[i] + compnode.buffer[i]
 		}
