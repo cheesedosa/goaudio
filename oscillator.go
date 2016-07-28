@@ -40,6 +40,30 @@ func (o *Oscillator) Connect(c Component){
 	(*cnode).input = append((*cnode).input,o)
 }
 
+/*Disconnect() disconnects the current component. Sets the output of all its input to a null slice 
+ * and the input of all its output components to null slice.
+ * Returns slices of all the input components and all the output components.
+ * Note that this currently does NOT support rewiring. 
+ * You'll manually have to iterate through the returned slice and use Connect() to rewire the way you like.
+ */
+ 
+func (o *Oscillator) Disconnect() ([]Component,[]Component){
+	var input,output []Component
+	input = o.node.input
+	output = o.node.output
+	
+	for _,c := range(input) {
+		c.getNode().output = []Component{}
+	}
+	
+	for _,c := range(output) {
+		c.getNode().input = []Component{}
+	}
+	
+	return input, output
+	
+}
+
 func (o *Oscillator) process(){
 	
 	if !o.isOn() {

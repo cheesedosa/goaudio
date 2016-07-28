@@ -8,4 +8,5 @@ type Component interface {
 	Connect(Component)
 	process()
 	getNode() *Node
+	Disconnect() ([]Component,[]Component)
 }

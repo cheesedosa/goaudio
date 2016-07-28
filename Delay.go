@@ -23,6 +23,31 @@ func (dly *Delay) Connect(c Component){
 	(*cnode).input = append((*cnode).input,dly)
 }
 
+/*Disconnect() disconnects the current component. Sets the output of all its input to a null slice 
+ * and the input of all its output components to null slice.
+ * Returns slices of all the input components and all the output components.
+ * Note that this currently does NOT support rewiring. 
+ * You'll manually have to iterate through the returned slice and use Connect() to rewire the way you like.
+ */
+ 
+func (dly *Delay) Disconnect() ([]Component,[]Component){
+	var input,output []Component
+	input = dly.node.input
+	output = dly.node.output
+	
+	for _,c := range(input) {
+		c.getNode().output = []Component{}
+	}
+	
+	for _,c := range(output) {
+		c.getNode().input = []Component{}
+	}
+	
+	return input, output
+	
+}
+
+			
 func (dly *Delay) getNode() *Node{
 	
 	return &dly.node
